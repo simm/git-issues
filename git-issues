@@ -329,7 +329,7 @@ class IssueSet:
             idx = int(idx_or_partial_hash) - 1
             comment = self.shelf[self.shelf.keys()[idx]]
         except:
-            print [key for key in self.shelf.iterkeys()]
+            #print [key for key in self.shelf.iterkeys()]
 
             def getCommentId(x):
                 if not 'comment_' in x:
@@ -1112,9 +1112,12 @@ if __name__ == '__main__':
             print "Usage: %s %s <issue-id | index>" % (sys.argv[0], command)
         else:
             issue = issueSet[args[0]]
-            comments = "\n       ".join(["Comment (%s): %s" % (comment[0:7],
-                                        issueSet.get_comment(comment[0:7]).comment)
-                                        for comment in issue.comments])
+            comments = "\n        "
+            for comment in issue.comments:
+               comments += issueSet.get_comment(comment[0:7]).comment
+               comments += "\n        "
+            print comments
+                
             if command == "show":
                 if issue.title:
                     print "          Title:", issue.title
