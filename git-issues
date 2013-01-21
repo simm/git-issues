@@ -85,6 +85,9 @@ class Person:
     def __unicode__(self):
         return u"%s <%s>" % (self.name, self.email)
 
+    def __str__(self):
+        return unicode(self)
+
 
 class Comment:
     def __init__(self, issue, author, comment):
@@ -103,9 +106,6 @@ class Comment:
         self.self_dirty = True
         self.issue.mark_dirty(self_dirty=False)
 
-    def display_comment(self):
-       return "Comment: ",self.comment,",Author: ",self.author
-
     def __getstate__(self):
         odict = self.__dict__.copy()  # copy the dict since we change it
         del odict['self_dirty']       # remove self dirty flag
@@ -114,6 +114,9 @@ class Comment:
     def __setstate__(self, dict):
         self.__dict__.update(dict)    # update attributes
         self.self_dirty = False
+
+    def __str__(self):
+        return "Comment: "+self.comment+" Author: "+self.author.__str__()
 
 
 class Issue:
@@ -1115,11 +1118,8 @@ if __name__ == '__main__':
             print "Usage: %s %s <issue-id | index>" % (sys.argv[0], command)
         else:
             issue = issueSet[args[0]]
-            comments = "\n        "
             for comment in issue.comments:
-               myComment = issueSet.get_comment(comment[0:7])
-               print "Comment: ",myComment.comment,", Author: ",myComment.author.name
-               # TODO this doesn't work, why? issueSet.get_comment(comment[0:7]).display_comment
+               print issueSet.get_comment(comment[0:7])
                 
             if command == "show":
                 if issue.title:
@@ -1131,7 +1131,7 @@ if __name__ == '__main__':
                     print "    Description:", format_long_text(issue.description)
                     print
                 if issue.author:
-                    print "         Author:", issue.author.name, " ", issue.author.email
+                    print "         Author:", issue.author
                 if issue.reporters:
                     print "    Reporter(s):", format_people_list(issue.reporters)
                 if issue.owners:
